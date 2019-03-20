@@ -1,0 +1,108 @@
+#!/bin/bash/python3
+
+import re
+import argparse
+import traceback
+import sys
+
+from modules import general, utility, brute
+
+# Create parser and suppress help to utilise our own
+parser = argparse.ArgumentParser(prog='macutil', description='Address manipulation and brute forcing', add_help=False, 
+                                 formatter_class=lambda prog: argparse.RawDescriptionHelpFormatter(prog,max_help_position=100))
+
+parser.add_argument('-set', help='set specific MAC address', required=False, action='store_true')
+parser.add_argument('-mac', help='address required for "-SET"', required=False)
+parser.add_argument('-v', help='print version', required=False, action='store_true')
+parser.add_argument('-h', '-help', help='help menu', required=False, action='store_true')
+parser.add_argument('-brute', help='brute force a MAC address, NAC bypassing', required=False, action='store_true')
+parser.add_argument('-random', help='set a random MAC address', required=False, action='store_true')
+parser.add_argument('-list', help='list current interfaces on the system', required=False, action='store_true')
+
+parser.add_argument('--VERSION_CONST', help=argparse.SUPPRESS, required=False)
+parser.add_argument('-reset', help='reset MAC address to default', required=False, action='store_true')
+parser.add_argument('-interface', help='interface to be manipulated', required=False)
+args = vars(parser.parse_args())
+
+version = '0.1.1'
+args['VERSION_CONST'] = version
+
+try:
+		
+	# Check usage
+	if not any((args['set'], args['reset'], args['random'], args['brute'], args['v'], args['list'], args['h'])):
+		general.banner()
+		general.description()
+	else:
+		general.banner()	
+		
+
+	# Help menu full description
+	if args['h']:
+		general.full_description()	
+	
+	
+	# Set MAC addres
+	if args['set']:
+		live_interfaces = utility.get_live_interfaces_mac(args)
+		if args['mac']:
+			if general.validate_mac(args['mac']):
+				utility.set_mac_address(args['mac'], live_interfaces['live'][0]['interface'])
+		else:
+			print('\nRequired: "-mac"\n')
+			sys.exit()
+	
+	
+	# Reset interface to default MAC address
+	if args['reset']:
+		if not args['interface']:
+			general.banner()
+			general.description()			
+			print('Required: "-interface"')
+		else:
+			utility.reset_default_mac(args['interface'])
+	
+	
+	# Random: Set random MAC address
+	if args['random']:
+		if not args['interface']:
+			live_interfaces = utility.get_live_interfaces_mac(args)
+			args['interface'] = live_interfaces['live'][0]['interface']
+			
+		utility.set_mac_address(utility.random_generator(), args['interface'])
+	
+	
+	# List all interfaces
+	if args['list']:
+		utility.list_interfaces(args)
+		
+	
+	# Start Spoofing MACs
+	if args['brute']:
+		live_interfaces = utility.get_live_interfaces_mac(args)
+		if len(live_interfaces['live']) < 1:
+			pass
+		else:
+			interface = live_interfaces['live'][0]['interface']
+			brute.start(interface)
+			
+		if not args['interface']:
+			live_interfaces = utility.get_live_interfaces_mac(args)
+			args['interface'] = live_interfaces['live'][0]['interface']
+		
+		brute.start(args['interface'])
+		
+	print('')
+
+except KeyError as e:
+	if not args['interface']:
+		general.banner()
+		general.description()			
+		print('No live interface found!\n\nRequired: "-interface"')
+	else:
+		print(e)
+except KeyboardInterrupt:
+	print('\nRage quit!')
+except Exception:
+	print(traceback.print_exc())
+		
