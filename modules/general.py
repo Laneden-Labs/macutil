@@ -36,7 +36,7 @@ def banner():
 	
 {name} | {twit}
   
-{url}""" . format (name="Author: Darryl Lane", twit="Twitter: @darryllane101", bypass="NAC Bypass", brute="MAC Brute Force", random="MAC Random", url="https://github.com/darryllane/mac_brute")
+{url}""" . format (name="Author: Darryl Lane", twit="Twitter: @darryllane101", bypass="NAC Bypass", brute="MAC Brute Force", random="MAC Random", url="https://github.com/ignoto101/macutil")
 
 	print(title)
 	print(banner_desc)	
@@ -63,6 +63,9 @@ def full_description():
 
 optional arguments:
   -h, --help            Show this help message and exit
+  -v                    Display current version
+  -vendor               Select a vendor to spoof
+  -list-vendor          List all vendors available in system
   -set                  Set specific MAC address "Required: -mac, -interface"
   -mac                  Address required for "Required: -set"
   -brute                Brute force a MAC address, NAC bypassing
@@ -82,6 +85,9 @@ def description():
 	content = """
 optional arguments:
   -h, --help            Show this help message and exit
+  -v                    Display current version
+  -vendor               Select a vendor to spoof
+  -list-vendor          List all vendors available in system
   -set                  Set specific MAC address "Required: -mac, -interface"
   -mac                  Address required for "Required: -set"
   -brute                Brute force a MAC address, NAC bypassing
@@ -93,9 +99,9 @@ optional arguments:
 examples:
 
 macutil -brute
+macutil -brute -interface en4
 macutil -set -mac 00:11:22:33:44:55 -interface en0
 macutil -reset -interface en0
 """
-	
 	print(content)
 	return

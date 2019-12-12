@@ -1,10 +1,9 @@
 import random
 import subprocess
-import time
 import re
 import sys
 import os
-import json
+from .general import get_file_content
 
 
 # Check if user is running as root/sudo
@@ -66,6 +65,43 @@ def request_interfaces(args):
 	return {"live": [dict(item.split(": ") for item in live)]}	
 
 
+# A List of common Telephone Vendor Mac Addresses
+def get_vendors(args):
+	vendor_list = []
+	vendor_spoof = []
+	filename = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/doc/known_macs.txt')
+	mac_list = get_file_content(filename)
+	
+	for item in mac_list:
+		if args['vendor']:
+			vendor_select = args['vendor']
+		else:
+			vendor_select = None
+			
+		if '-' in item[1]:
+			vendor = item[1].strip().rstrip().split('-')[0]
+		else:
+			vendor = item[1].strip().rstrip()
+		
+		if vendor_select:
+			if vendor.capitalize() == vendor_select.capitalize():
+				vendor_list.append(vendor)
+				vendor_spoof.append(item)
+		else:					
+			vendor_list.append(vendor)
+			vendor_spoof.append(item)
+			
+	vendor_list = sorted(set(sorted(vendor_list)))
+	
+	if args['list_vendor']:
+		print('\nVendors:\n')
+		for item in vendor_list:
+			print('\t{}'.format(item))
+		sys.exit()
+	else:
+		return vendor_spoof
+
+
 # List all interfaces
 def list_interfaces(args):
 	print('\nAll Interfaces\n')
@@ -84,9 +120,8 @@ def list_interfaces(args):
 
 
 # Reset interface MAC address to default
-def reset_default_mac(interface):
+def reset_default_mac(args, interface):
 	
-	live = []
 	results = re.findall(r'^(?:Hardware Port|Device|Ethernet Address): (.+)$',
 	                     subprocess.check_output(('networksetup', '-listallhardwareports'), 
 	                    universal_newlines=True), re.MULTILINE)
@@ -95,7 +130,10 @@ def reset_default_mac(interface):
 		port, interface, address = results[i:i + 3]
 		if port == 'Bluetooth PAN':
 			pass
-		else:
+		else:	
+			if args['interface']:
+				interface = args['interface']
+				
 			process = subprocess.Popen("ifconfig {}".format(interface), shell=True, stdout=subprocess.PIPE)
 			output = process.communicate()[0].decode()
 			lines = output.splitlines()

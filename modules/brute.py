@@ -7,7 +7,7 @@ import re
 import sys
 import os
 from .general import get_file_content
-from .utility import interface_down, interface_up, check_user
+from .utility import interface_down, interface_up, check_user, get_vendors
 
 
 def get_local_address(interface):	
@@ -32,12 +32,15 @@ def chunk_me(mac_address):
 	return mac
 
 
-def mac_search(mac_list, interface):
+def mac_search(args, mac_list, interface):
 	
 	if check_user():
 		random.shuffle(mac_list)
 		# For each MAC address in our Vendor List
-		print('\nSpoofing Mac Addresses\n')
+		if args['vendor']:
+			print('\nSpoofing {} Mac Addresses\n'.format(args['vendor'].capitalize()))
+		else:
+			print('\nSpoofing Mac Addresses\n')
 		for mac in mac_list:
 			
 			# Create a valid random address from the vendor supplied MAC address
@@ -60,17 +63,15 @@ def mac_search(mac_list, interface):
 					print('\nValid MAC Address Identified:\n')
 					print('\tInterface:\t{}'.format(interface))
 					print('\tIp:\t\t{}'.format(result.decode()))
-					print('\tVendor:\t\t{}'.format(mac[1]))
+					print('\tVendor:\t\t{}'.format(mac[1].strip().rstrip()))
 					print('\tMac:\t\t{}\n'.format(mac_address))
 					sys.exit()
 
 
 # MAIN
 # Start the MAC address search
-def start(interface):
-	# A List of common Telephone Vendor Mac Addresses
-	filename = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/doc/known_macs.txt')
-	mac_list = get_file_content(filename)
+def start(args, interface):
 	
 	# Start Bruting
-	mac_search(mac_list, interface)
+	vendor_spoof = get_vendors(args)
+	mac_search(args, vendor_spoof, interface)
