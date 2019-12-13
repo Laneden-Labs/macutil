@@ -1,9 +1,18 @@
 #!/usr/local/bin/python3
 
+
+import site
+import os 
 import argparse
 import traceback
 import sys
 from modules import general, utility, brute
+
+SITES = site.getsitepackages()
+for item in SITES:
+	if os.path.exists(item + "/Macutil/__init__.py"):
+		sys.path.append(item + '/Macutil/')
+		
 
 # Create parser and suppress help to utilise our own
 parser = argparse.ArgumentParser(prog='macutil', description='MAC Address manipulation and brute forcing', add_help=False, 
@@ -24,7 +33,7 @@ parser.add_argument('-reset', help='reset MAC address to default', required=Fals
 parser.add_argument('-interface', help='interface to be manipulated', required=False)
 args = vars(parser.parse_args())
 
-version = '0.1.4'
+version = '0.1.5'
 args['VERSION_CONST'] = version
 
 try:	
