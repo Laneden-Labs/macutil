@@ -146,6 +146,7 @@ def reset_default_mac(args, interface):
 
 # Set MAC address to interface
 def set_mac_address(mac_address, interface):
+	check_user()
 	subprocess.Popen("ifconfig {interface} ether {mac_address}".format(interface=interface, mac_address=mac_address), shell=True, stdout=subprocess.PIPE)
 	print('\nSet Mac Address:\n')
 	print('\tMac:\t\t{}'.format(mac_address))
