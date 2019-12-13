@@ -5,8 +5,6 @@ import subprocess
 import time
 import re
 import sys
-import os
-from .general import get_file_content
 from .utility import interface_down, interface_up, check_user, get_vendors
 
 
@@ -50,8 +48,7 @@ def mac_search(args, mac_list, interface):
 			interface_up(interface)
 			
 			# Alter our system MAC address to that of the newly generated vendor mac address
-			process = subprocess.Popen('ifconfig {interface} ether {mac_address}'.format(interface=interface, mac_address=mac_address), shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-			output = process.communicate()[0]
+			subprocess.Popen('ifconfig {interface} ether {mac_address}'.format(interface=interface, mac_address=mac_address), shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 			interface_up(interface)
 			print('Set:\t{}\t{}'.format(mac_address, mac[1]))
 			time.sleep(15)
