@@ -12,6 +12,6 @@ setup(
     description='''MAC Address brute forcing tool, used to bypass MAC based filtering''',
     long_description_content_type='text/markdown',
     long_description=open('README.md').read(),
-    scripts=['app/macutil'],
+    scripts=['macutil'],
 )
 
