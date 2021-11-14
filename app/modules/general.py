@@ -35,7 +35,7 @@ def banner():
 	
 {name} | {twit}
   
-{url}""" . format (name="Author: Darryl Lane", twit="Twitter: @darryllane101", bypass="NAC Bypass", brute="MAC Brute Force", random="MAC Random", url="https://github.com/ignoto101/macutil")
+{url}""" . format (name="Author: Darryl Lane", twit="Twitter: @darryllane101", bypass="NAC Bypass", brute="MAC Brute Force", random="MAC Random", url="https://github.com/Laneden-Labs/macutil")
 
 	print(title)
 	print(banner_desc)	
