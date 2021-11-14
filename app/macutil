@@ -10,8 +10,8 @@ from modules import general, utility, brute
 
 SITES = site.getsitepackages()
 for item in SITES:
-	if os.path.exists(item + "/Macutil/__init__.py"):
-		sys.path.append(item + '/Macutil/')
+	if os.path.exists(item + "/app/__init__.py"):
+		sys.path.append(item + '/app/')
 		
 
 # Create parser and suppress help to utilise our own
@@ -33,7 +33,7 @@ parser.add_argument('-reset', help='reset MAC address to default', required=Fals
 parser.add_argument('-interface', help='interface to be manipulated', required=False)
 args = vars(parser.parse_args())
 
-version = '0.1.5'
+version = '0.1.8'
 args['VERSION_CONST'] = version
 
 try:	
@@ -114,5 +114,5 @@ except KeyboardInterrupt:
 	print('\nRage quit!')
 except Exception:
 	print(traceback.print_exc())
-	print('\nAn unhandled exception has occured, please raise bugs at:\n\nhttps://github.com/ignoto101/macutil/issues')
+	print('\nAn unhandled exception has occured, please raise bugs at:\n\nhttps://github.com/Laneden-Labs/macutil/issues')
 		
