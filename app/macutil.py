@@ -1,14 +1,21 @@
-#!/bin/bash/python3
+#!/usr/local/bin/python3
 
-import re
+
+import site
+import os 
 import argparse
 import traceback
 import sys
-
 from modules import general, utility, brute
 
+SITES = site.getsitepackages()
+for item in SITES:
+	if os.path.exists(item + "/Macutil/__init__.py"):
+		sys.path.append(item + '/Macutil/')
+		
+
 # Create parser and suppress help to utilise our own
-parser = argparse.ArgumentParser(prog='macutil', description='Address manipulation and brute forcing', add_help=False, 
+parser = argparse.ArgumentParser(prog='macutil', description='MAC Address manipulation and brute forcing', add_help=False, 
                                  formatter_class=lambda prog: argparse.RawDescriptionHelpFormatter(prog,max_help_position=100))
 
 parser.add_argument('-set', help='set specific MAC address', required=False, action='store_true')
@@ -26,19 +33,21 @@ parser.add_argument('-reset', help='reset MAC address to default', required=Fals
 parser.add_argument('-interface', help='interface to be manipulated', required=False)
 args = vars(parser.parse_args())
 
-version = '0.1.8'
+version = '0.1.5'
 args['VERSION_CONST'] = version
 
-try:
-		
+try:	
 	# Check usage
 	if not any((args['set'], args['reset'], args['random'], args['brute'], args['v'], args['list'], args['h'], args['list_vendor'])):
 		general.banner()
 		general.description()
 	else:
-		general.banner()	
+		general.banner()
 		
-
+		# Version check
+		if args['v']:
+			print('\nmacutil v{}'.format(version))
+		
 	# Help menu full description
 	if args['h']:
 		general.full_description()	
@@ -66,11 +75,12 @@ try:
 	
 	
 	# Random: Set random MAC address
+	
 	if args['random']:
 		if not args['interface']:
 			live_interfaces = utility.get_live_interfaces_mac(args)
 			args['interface'] = live_interfaces['live'][0]['interface']
-			
+		
 		utility.set_mac_address(utility.random_generator(), args['interface'])
 	
 	
