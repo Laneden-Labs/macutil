@@ -2,7 +2,7 @@ from setuptools import setup
 import setuptools
 setup(
     name='macutil',
-    version='0.1.20',
+    version='0.1.21',
     author='Darryl lane',
     author_email='Darryllane101@gmail.com',
     url='https://github.com/Laneden-Labs/macutil',
