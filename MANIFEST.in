@@ -1,5 +1,5 @@
 include *.txt
 include *.md
-recursive-include Package/doc *.txt
-recursive-include Package/modules *.py
-recursive-exclude / *.DS_store
+recursive-include doc *.txt
+recursive-include modules *.py
+recursive-exclude  *.DS_store
